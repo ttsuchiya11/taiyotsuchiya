@@ -1,28 +1,81 @@
+
 <!doctype html>
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Taiyo Tsuchiya — Portfolio</title>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<title>Coming Soon</title>
 <style>
-  html,body{margin:0}
-  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#0b0b0c;color:#e9e9ea}
-  .wrap{max-width:840px;margin:12vh auto;padding:0 20px}
-  h1{font-size:44px;line-height:1.1;margin:0 0 16px}
-  p{font-size:18px;color:#b9bbc2}
-  .cta{display:inline-block;margin-top:20px;padding:12px 18px;border:1px solid #2e2f35;border-radius:10px;text-decoration:none;color:#e9e9ea}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:26px}
-  .card{border:1px solid #2e2f35;border-radius:14px;padding:16px}
-  .tag{font-size:12px;color:#9aa0a6}
+  :root{--bg:#1a1a1a;--fg:#f5f5f5;--muted:#cccccc;--glass:rgba(255,255,255,.08)}
+  html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--fg);display:flex;align-items:center;justify-content:center;text-align:center}
+  .wrap{max-width:520px;padding:20px}
+  h1{font-size:2.2rem;margin:0 0 .4em;font-weight:600;color:var(--fg)}
+  p{font-size:1.1rem;color:var(--muted);margin:.5em 0 0}
+  .emoji{font-size:3rem;margin-top:.8em;cursor:pointer;display:inline-block;user-select:none;outline:none;transition:transform .15s ease}
+  .emoji:active{transform:translateY(2px) scale(.98)}
+  /* toast */
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--glass);backdrop-filter:blur(10px);padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--fg);font-size:.95rem;transition:all .25s ease;pointer-events:none}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  /* steam particles */
+  .steam{position:absolute;left:0;top:0;font-size:1.1rem;opacity:0;animation:floatUp 1.2s ease-out forwards}
+  @keyframes floatUp{0%{transform:translate(var(--x,0),0) scale(.9);opacity:0}10%{opacity:1}100%{transform:translate(var(--x,0),-80px) scale(1.2);opacity:0}}
+  /* subtle focus ring for accessibility */
+  .emoji:focus{box-shadow:0 0 0 3px rgba(255,255,255,.15);border-radius:8px}
 </style>
 <div class="wrap">
-  <h1>Taiyo Tsuchiya</h1>
-  <p>Building useful things with AI, data, and clean UX. Currently prototyping <strong>SōcialGraf</strong> and <strong>CullenX</strong>.</p>
-  <a class="cta" href="mailto:hello@yourdomain.com">Contact</a>
-  <div class="grid">
-    <div class="card"><div class="tag">Now</div><div>Open to roles & collabs</div></div>
-    <div class="card"><div class="tag">Projects</div><div>SōcialGraf • CullenX • More → /projects</div></div>
-    <div class="card"><div class="tag">Links</div><div>GitHub • LinkedIn • Resume (PDF)</div></div>
-  </div>
+  <h1>Things are brewing, stay tuned</h1>
+  <p>Something fresh is on the way.</p>
+  <div id="mug" class="emoji" role="button" tabindex="0" aria-label="Secret coffee mug">☕</div>
 </div>
+<div id="toast" class="toast">Psst… secret blend unlocked.</div>
+<script>
+  const mug = document.getElementById('mug');
+  const toast = document.getElementById('toast');
+  let clicks = 0, hideTimer;
+
+  function spawnSteam(x, y){
+    const s = document.createElement('div');
+    s.className = 'steam';
+    s.textContent = Math.random() < 0.5 ? '☁️' : '✨';
+    s.style.left = x - 6 + 'px';
+    s.style.top = y - 10 + 'px';
+    s.style.setProperty('--x', (Math.random()*40-20)+'px');
+    document.body.appendChild(s);
+    s.addEventListener('animationend', ()=> s.remove());
+  }
+
+  function showToast(text){
+    if(text) toast.textContent = text;
+    toast.classList.add('show');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(()=> toast.classList.remove('show'), 1400);
+  }
+
+  function easterEgg(){
+    clicks++;
+    const rect = mug.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    for(let i=0;i<6;i++){
+      spawnSteam(cx + (Math.random()*20-10), cy - 8);
+    }
+    mug.animate([
+      { transform:'translateY(0) rotate(0deg)' },
+      { transform:'translateY(-6px) rotate(-6deg)' },
+      { transform:'translateY(0) rotate(0deg)' }
+    ], { duration:300, easing:'ease-out' });
+
+    if(clicks % 5 === 0){
+      showToast('You found the easter egg!');
+    } else {
+      showToast('Brewing…');
+    }
+  }
+
+  mug.addEventListener('click', easterEgg);
+  mug.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      easterEgg();
+    }
+  });
+</script>
